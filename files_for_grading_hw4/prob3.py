@@ -47,7 +47,6 @@ class prob3(problem):
                 result = func(*inp) == func_sol(*inp)
                 if not result:
                     return 0.5, 'The function did not return the right output.'
-
             return 1, ''
-        except:
-            return 0, 'The function did not take the right input.'
+        except Exception as e:
+            return 0, f'The function did not take the right input. Error: {str(e)}'
