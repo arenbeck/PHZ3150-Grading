@@ -2,8 +2,8 @@ from canvasapi import Canvas
 import zipfile, os, shutil, importlib.util
 
 # Instructions on how to get token: https://canvas.instructure.com/doc/api/file.oauth.html#manual-token-generation
-api_token = '' # Each user (grader/Professor) needs to get their own api token
-course_id = '' # Can be found in the URL
+api_token = 'your_token' # Each user (grader/Professor) needs to get their own api token
+course_id = '1472271' # Can be found in the URL
 
 # Canvas API URL
 API_URL = "https://webcourses.ucf.edu"
@@ -35,27 +35,91 @@ def get_user_from_name(name):
     return None
 
 
+def extract_zip_file(file_path, output_dir):
+    """
+    Extracts a zip file to the specified directory and moves into a folder
+    starting with 'hw' if present, ignoring hidden files.
+    """
+    if zipfile.is_zipfile(file_path):
+        with zipfile.ZipFile(file_path, 'r') as zip_ref:
+            zip_ref.extractall(output_dir)
+        print(f"Extracted ZIP file: {file_path} to {output_dir}")
+        os.remove(file_path)  # Remove the original zip file after extraction
+
+        # Look for a folder starting with 'hw'
+        for root, dirs, files in os.walk(output_dir):
+            for dir_name in dirs:
+                dir_name = dir_name.lower()
+                if dir_name.startswith('hw'):
+                    hw_dir = os.path.join(root, dir_name)
+                    move_files_to_root(hw_dir, output_dir)
+                    break  # Stop after handling the first matching folder
+    else:
+        print(f"{file_path} is not a ZIP file")
+
+
+def move_files_to_root(source_dir, target_dir):
+    """
+    Moves all non-hidden files and subdirectories from source_dir to target_dir,
+    then removes source_dir, including any hidden files or subdirectories.
+    """
+    for item in os.listdir(source_dir):
+        src_path = os.path.join(source_dir, item)
+        dst_path = os.path.join(target_dir, item)
+
+        # Skip moving if destination already exists (prevents duplicates)
+        if not item.startswith('.') and not os.path.exists(dst_path):
+            shutil.move(src_path, dst_path)
+
+    # Remove empty source directory if it exists
+    cleanup_directory(source_dir)
+
+
+def cleanup_directory(directory):
+    """
+    Recursively removes all files and hidden files before deleting the directory.
+    """
+    for root, dirs, files in os.walk(directory, topdown=False):
+        for name in files:
+            os.remove(os.path.join(root, name))
+        for name in dirs:
+            os.rmdir(os.path.join(root, name))
+    try:
+        os.rmdir(directory)
+    except OSError:
+        print(f"Could not remove directory: {directory}, may already be empty")
+
 # Gets all the submitted files from an assignment and puts them in a folder "submission_dir"
 # Each file will be added to a folder with the students canvas ID as the name of the folder
 def get_files_from_assignment(assignment_id, submissions_dir):
-    if not os.path.exists(submissions_dir):
-        os.makedirs(submissions_dir)
+    """
+    Fetches files from an assignment and handles ZIP extraction.
+    If submissions_dir already exists, deletes and recreates it.
+    """
+    # Remove existing directory and create a fresh empty one
+    if os.path.exists(submissions_dir):
+        shutil.rmtree(submissions_dir)
+    os.makedirs(submissions_dir)
 
     assignment = course.get_assignment(assignment_id)
-    submissions = assignment.get_submissions() # Get's submissions
+    submissions = assignment.get_submissions()  # Gets submissions
     for submission in submissions:
-        if submission.grade != None and submission.grade_matches_current_submission: continue
+        if submission.grade is not None and submission.grade_matches_current_submission:
+            continue
         attachments = submission.attachments
-        if len(attachments) < 1: continue
+        if not attachments:
+            continue
         output_dir = f'{submissions_dir}/{submission.user_id}'
-        if os.path.exists(output_dir):
-            shutil.rmtree(output_dir)
-        os.makedirs(output_dir)
+        os.makedirs(output_dir, exist_ok=True)
+
         for attachment in attachments:
-            filePath = attachment.filename
-            attachment.download(filePath)
-            dst = os.path.join(output_dir, filePath)
-            shutil.move(filePath, dst)
+            file_path = attachment.filename
+            attachment.download(file_path)
+            dst = os.path.join(output_dir, file_path)
+            shutil.move(file_path, dst)
+
+            # Extract ZIP files if detected
+            extract_zip_file(dst, output_dir)
 
 
 # Old function to get the zip codes, might need to be fixed
