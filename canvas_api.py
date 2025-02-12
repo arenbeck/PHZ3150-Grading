@@ -2,15 +2,15 @@ from canvasapi import Canvas
 import zipfile, os, shutil, importlib.util
 
 # Instructions on how to get token: https://canvas.instructure.com/doc/api/file.oauth.html#manual-token-generation
-api_token = 'your_token' # Each user (grader/Professor) needs to get their own api token
-course_id = '1472271' # Can be found in the URL
+API_TOKEN = os.getenv("CANVAS_API_TOKEN") # Each user (grader/Professor) needs to get their own api token
+COURSE_ID = '1472271' # Can be found in the URL
 
 # Canvas API URL
 API_URL = "https://webcourses.ucf.edu"
 
 # Initialize a new Canvas object
-canvas = Canvas(API_URL, api_token)
-course = canvas.get_course(course_id) # Get's course
+canvas = Canvas(API_URL, API_TOKEN)
+course = canvas.get_course(COURSE_ID) # Get's course
 users = course.get_users(enrollment_type=['student'])
 
 
