@@ -88,6 +88,6 @@ class prob2(problem):
             if not check_outputs(func(*inp), func_sol(*inp)):
                 return 0.5, f'The function {func_name} did not return the right values'
         except Exception as e:
-            return 0, f'The function {func_name} did not take the right input or did not return the output in the right format.'
+            return 0, f'The function {func_name} did not take the right input or did not return the output in the right format.\n{str(e)}'
 
         return 1, ''

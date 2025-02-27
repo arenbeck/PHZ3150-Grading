@@ -66,8 +66,8 @@ class prob1(problem):
                 return 0.5, f'The function {function_name} did not return the right output.'
 
             return 1, ''
-        except:
-            return 0, f'The function {function_name} did not take the right input.'
+        except Exception as e:
+            return 0, f'The function did not take the right input. Error: {str(e)}'
 
     def check_while_loop_function(self):
         function_name = 'largest_word_while_loop'
@@ -83,5 +83,5 @@ class prob1(problem):
                 return 0.5, f'The function {function_name} did not return the right output.'
 
             return 1, ''
-        except:
-            return 0, f'The function {function_name} did not take the right input.'
+        except Exception as e:
+            return 0, f'The function did not take the right input. Error: {str(e)}'

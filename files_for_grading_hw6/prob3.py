@@ -63,7 +63,6 @@ class prob3(problem):
                 if not result:
                     return 0.5, f'The function {func_name} did not return the right output.'
         except Exception as e:
-            print(e)
-            return 0, f'The function {func_name} did not take the right input.'
+            return 0, f'The function {func_name} did not take the right input.\n{str(e)}'
 
         return 1, ''
