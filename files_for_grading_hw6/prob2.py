@@ -12,7 +12,7 @@ def func_sol(x, x0, y0, r):
 
 
 def inputs():
-    x0, y0, r, x = 2, 2, 10, np.linspace(-8, 12, 201)
+    x0, y0, r, x = 2, 2, 10,  -8.+0.1*np.arange(201)
     return [x, x0, y0, r]
 
 
