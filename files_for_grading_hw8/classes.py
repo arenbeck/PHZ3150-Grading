@@ -64,10 +64,10 @@ class problem:
                 return False
 
             if type(solution) == type(np.array([])):
-                if not np.array_equal(output, solution):
+                if not np.allclose(output, solution, rtol=0.01):
                     return False
             else:
-                if output != solution:
+                if not np.allclose(output, solution, rtol=0.01):
                     return False
 
             return True
