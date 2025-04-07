@@ -41,7 +41,7 @@ def main():
     try:
         module = import_module('module_for_grading.py')
     except:
-        print_to_file(0, 'Notebook did not compile without errors.')
+        print_to_file(0, 'Notebook did not compile without errors. Make sure your log is in a MARKDOWN cell.')
         return
 
     hw = homework(module, [15, 15, 15, 5])

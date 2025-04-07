@@ -28,7 +28,7 @@ def print_to_file(grade, comment):
         f.write(f'{grade}\n{comment}\n')
 
 
-def add_comment(final, comment, problem = None):
+def add_comment(final, comment, problem=None):
     if comment != '':
         if problem != None:
             if final != '':
