@@ -27,7 +27,7 @@ class homework:
 
     def get_final_comment(self):
         self.final_comment = ''
-        for n, prob in enumerate(self.probs, start = 1):
+        for n, prob in enumerate(self.probs, start=1):
             self.final_comment = add_comment(self.final_comment, prob.prob_comment, f'Problem {n}')
 
     def add_end_comment(self):

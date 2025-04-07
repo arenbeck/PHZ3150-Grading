@@ -7,14 +7,16 @@ def inputs():
     wl = wl.split()
     checkwords = "quick dog whale ran fox house red a the"
     checkwords = checkwords.split()
-    return  checkwords, wl
+    return checkwords, wl
 
 def func_sol(word, list_of_words):
     if word in list_of_words:
         return True
     return False
 
-class prob2(problem):
+class prob3(problem):
+    grade = 10
+    comment = ""
     def __init__(self, module):
         super().__init__(module)
 
@@ -22,31 +24,26 @@ class prob2(problem):
         self.add_prob_grade_and_comment(self.check_function)
         
     def check_variable(self):
-        grade = 10
-        comment = ""
-
-        #checks for word_list: 
-        
+        #checks for word_list:
         wl = return_att(self.module, 'word_list')
         if wl is not None: # word_list exists 
             if type(wl) != type([]):
-                comment += 'word_list is not a list.\n'
-                grade -= 1
+                self.comment += 'word_list is not a list.\n'
+                self.grade -= 1
             elif wl != ['twinkle','twinkle','little','star']:
-                comment += 'word_list does not contain the correct words.\n'
-                grade -= 1
+                self.comment += 'word_list does not contain the correct words.\n'
+                self.grade -= 1
 
         # not checking for students to find letters yet: (2 points)
-        return grade, comments
+        return
 
     def check_function(self):
-
         #not checking for printed statements yet.
         
         func = return_att(self.module, 'word_in_list')
         if func == None:
-            comment += 'No function named word_in_list.\n'
-            grade -= 3
+            self.comment += 'No function named word_in_list.\n'
+            self.grade -= 3
 
         cw, cwl = inputs()
 
@@ -54,20 +51,20 @@ class prob2(problem):
             gr = 0
             for word in cw:
                 a = func_sol(word, cwl)
-                b = func(word, csl)
+                b = func(word, cwl)
                 if a ^ b: #a XOR b implies that outputs differ.
-                    comment += "Word_in_list returned incorrect results.\n"
+                    self.comment += "Word_in_list returned incorrect results.\n"
                     gr = 1
-            grade -= gr
+            self.grade -= gr
                                                     
         except:
             
-            comment += "Word_in_list did not run without errors.\n"
-            grade -= 1
+            self.comment += "Word_in_list did not run without errors.\n"
+            self.grade -= 1
 
         #not checking for comments yet. (1 point)
 
-        return grade, comment
+        return
             
 
 
